@@ -14,6 +14,8 @@ class WeatherViewController: UIViewController, UITextFieldDelegate {
     @IBOutlet weak var cityLabel: UILabel!
     @IBOutlet weak var searchTextField: UITextField! // Campo de texto de pesquisa
     
+    var weatherManager = WeatherManager()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -23,7 +25,7 @@ class WeatherViewController: UIViewController, UITextFieldDelegate {
 
     @IBAction func searchPressed(_ sender: UIButton) { // Botão Lupa (search) da busca.
         searchTextField.endEditing(true)
-        print(searchTextField.text!) // Com ! porque nesse caso o text é um optional. Então é um campo vazio por padrão.
+        
     }
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
@@ -42,6 +44,12 @@ class WeatherViewController: UIViewController, UITextFieldDelegate {
     }
     
     func textFieldDidEndEditing(_ textField: UITextField) {
+        
+        if let city = searchTextField.text {
+            weatherManager.fetchWeather(cityName: city)
+        }
+            
+        // Use searchTextField.text para ir até ao clima da Cidade
         searchTextField.text = "" // "Did End Editing" Para limpar o campo de pesquisa quando pressionar "ir".
     }
     
