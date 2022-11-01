@@ -31,13 +31,28 @@ struct WeatherManager {
                 }
                 
                 if let safeData = data {
-                    let dataString = String(data: safeData, encoding: .utf8)
-                    print(dataString)
+                    // Dentro de um Closure, quando chamamos um método, usamos o self. (Método = func de uma classe.)
+                    self.parseJSON(weatherData: safeData)
+                    //let dataString = String(data: safeData, encoding: .utf8)
+                    //print(dataString)
                 }
             }
             // 4. Start the Task
             task.resume()
         }
+    }
+    
+    func parseJSON(weatherData: Data) {
+        let decoder = JSONDecoder()
+        
+        do {
+            let decodeData = try decoder.decode(WeatherData.self, from: weatherData)
+            print(decodeData.main.temp)
+            print(decodeData.weather[0].description)
+        } catch {
+            print(error)
+        }
+        
     }
     
 }
