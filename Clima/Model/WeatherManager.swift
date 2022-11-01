@@ -7,9 +7,16 @@
 
 import Foundation
 
+protocol WeatherManagerDelegate {
+    func didUpdateWeather(weather: WeatherModel)
+    
+}
+
 struct WeatherManager {
     
     let weatherURL = "https://api.openweathermap.org/data/2.5/weather?appid=4f5741f2ec4a9ffa8b171976df9b4527&units=metric"
+    
+    var delegate: WeatherManagerDelegate?
     
     func fetchWeather(cityName: String) {
         let urlString = "\(weatherURL)&q=\(cityName)"
@@ -32,9 +39,9 @@ struct WeatherManager {
                 
                 if let safeData = data {
                     // Dentro de um Closure, quando chamamos um método, usamos o self. (Método = func de uma classe.)
-                    self.parseJSON(weatherData: safeData)
-                    //let dataString = String(data: safeData, encoding: .utf8)
-                    //print(dataString)
+                    if let weather = self.parseJSON(weatherData: safeData) {
+                        self.delegate?.didUpdateWeather(weather: weather)
+                    }
                 }
             }
             // 4. Start the Task
@@ -42,15 +49,23 @@ struct WeatherManager {
         }
     }
     
-    func parseJSON(weatherData: Data) {
+    func parseJSON(weatherData: Data) -> WeatherModel? {
         let decoder = JSONDecoder()
         
         do {
             let decodeData = try decoder.decode(WeatherData.self, from: weatherData)
-            print(decodeData.main.temp)
-            print(decodeData.weather[0].description)
+            let id = decodeData.weather[0].id
+            let temp = decodeData.main.temp
+            let name = decodeData.name
+            
+            let weather = WeatherModel(conditionId: id, cityName: name, temperature: temp)
+            return weather
+            
+            print(weather.conditionName)
+            print(weather.temperatureString)
         } catch {
             print(error)
+            return nil
         }
         
     }

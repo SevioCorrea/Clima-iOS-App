@@ -7,7 +7,7 @@
 
 import UIKit
 
-class WeatherViewController: UIViewController, UITextFieldDelegate {                       
+class WeatherViewController: UIViewController, UITextFieldDelegate, WeatherManagerDelegate {
 
     @IBOutlet weak var conditionImageView: UIImageView!
     @IBOutlet weak var temperatureLabel: UILabel!
@@ -18,6 +18,8 @@ class WeatherViewController: UIViewController, UITextFieldDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        weatherManager.delegate = self
         
         searchTextField.delegate = self // Aqui está dizendo que o searchTextField deve retornar ele mesmo. Irá notificar o Controller.
     }
@@ -51,6 +53,10 @@ class WeatherViewController: UIViewController, UITextFieldDelegate {
             
         // Use searchTextField.text para ir até ao clima da Cidade
         searchTextField.text = "" // "Did End Editing" Para limpar o campo de pesquisa quando pressionar "ir".
+    }
+    
+    func didUpdateWeather(weather: WeatherModel) {
+        print(weather.temperature)
     }
     
 }
