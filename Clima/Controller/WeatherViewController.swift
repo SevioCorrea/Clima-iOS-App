@@ -46,8 +46,8 @@ class WeatherViewController: UIViewController, UITextFieldDelegate, WeatherManag
     }
     
     func textFieldDidEndEditing(_ textField: UITextField) {
-        
-        if let city = searchTextField.text {
+        // .addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) PARA REMOVER ESPAÇOS DA PESQUISA E ADICIONAR %20
+        if let city = searchTextField.text?.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) {
             weatherManager.fetchWeather(cityName: city)
         }
             
@@ -55,8 +55,16 @@ class WeatherViewController: UIViewController, UITextFieldDelegate, WeatherManag
         searchTextField.text = "" // "Did End Editing" Para limpar o campo de pesquisa quando pressionar "ir".
     }
     
-    func didUpdateWeather(weather: WeatherModel) {
-        print(weather.temperature)
+    func didUpdateWeather(_ weatherManager: WeatherManager, weather: WeatherModel) {
+        DispatchQueue.main.async {
+            self.temperatureLabel.text = weather.temperatureString
+            self.conditionImageView.image = UIImage(systemName: weather.conditionName)
+            self.cityLabel.text = weather.cityName
+        }
+    }
+    
+    func didFailWithError(error: Error) {
+        print(error)
     }
     
 }
