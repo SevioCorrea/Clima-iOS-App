@@ -7,7 +7,7 @@
 
 import UIKit
 
-class WeatherViewController: UIViewController, UITextFieldDelegate, WeatherManagerDelegate {
+class WeatherViewController: UIViewController {
 
     @IBOutlet weak var conditionImageView: UIImageView!
     @IBOutlet weak var temperatureLabel: UILabel!
@@ -24,7 +24,12 @@ class WeatherViewController: UIViewController, UITextFieldDelegate, WeatherManag
         searchTextField.delegate = self // Aqui está dizendo que o searchTextField deve retornar ele mesmo. Irá notificar o Controller.
     }
     
+}
 
+//MARK: - UITextFieldDelegate
+
+extension WeatherViewController: UITextFieldDelegate {
+   
     @IBAction func searchPressed(_ sender: UIButton) { // Botão Lupa (search) da busca.
         searchTextField.endEditing(true)
         
@@ -54,6 +59,11 @@ class WeatherViewController: UIViewController, UITextFieldDelegate, WeatherManag
         // Use searchTextField.text para ir até ao clima da Cidade
         searchTextField.text = "" // "Did End Editing" Para limpar o campo de pesquisa quando pressionar "ir".
     }
+}
+
+//MARK: - WeatherManagerDelegate
+
+extension WeatherViewController: WeatherManagerDelegate {
     
     func didUpdateWeather(_ weatherManager: WeatherManager, weather: WeatherModel) {
         DispatchQueue.main.async {
@@ -66,6 +76,4 @@ class WeatherViewController: UIViewController, UITextFieldDelegate, WeatherManag
     func didFailWithError(error: Error) {
         print(error)
     }
-    
 }
-
